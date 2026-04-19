@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dylan Tasdhary</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@900&family=Nunito:wght@700;900&family=Roboto:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --violet: #5e17eb;
+      --violet-light: #7c3aff;
+      --violet-dim: rgba(94,23,235,0.08);
+      --violet-glow: rgba(94,23,235,0.18);
+      --black: #000000;
+      --dark-gray: #434343;
+      --white: #ffffff;
+      --off-white: #f8f7ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      font-weight: 300;
+      font-size: 12pt;
+      color: var(--black);
+      background: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* ─── NOISE TEXTURE OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 100;
+      padding: 18px 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(94,23,235,0.1);
+      transition: box-shadow 0.3s;
+    }
+    nav.scrolled { box-shadow: 0 4px 30px rgba(94,23,235,0.12); }
+
+    .nav-logo {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 900;
+      font-size: 20px;
+      color: var(--violet);
+      letter-spacing: -0.5px;
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--black); }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--dark-gray);
+      text-decoration: none;
+      letter-spacing: 0.5px;
+      position: relative;
+      transition: color 0.2s;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--violet);
+      transition: width 0.25s ease;
+    }
+    .nav-links a:hover { color: var(--violet); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* ─── HERO ─── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 120px 60px 80px;
+      position: relative;
+      overflow: hidden;
+      background: var(--white);
+    }
+
+    .hero-bg-circle {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .hero-bg-circle.c1 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(94,23,235,0.12) 0%, transparent 70%);
+      top: -100px; right: -100px;
+      animation: float 8s ease-in-out infinite;
+    }
+    .hero-bg-circle.c2 {
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(94,23,235,0.07) 0%, transparent 70%);
+      bottom: 100px; left: 80px;
+      animation: float 11s ease-in-out infinite reverse;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-30px); }
+    }
+
+    .hero-content {
+      max-width: 760px;
+      z-index: 1;
+      animation: fadeUp 0.9s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--violet-dim);
+      border: 1px solid rgba(94,23,235,0.2);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--violet);
+      margin-bottom: 28px;
+      letter-spacing: 0.5px;
+      animation: fadeUp 0.9s ease 0.1s both;
+    }
+    .hero-tag .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--violet);
+      animation: pulse 2s ease infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.7); }
+    }
+
+    .hero-name {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 900;
+      font-size: clamp(42px, 7vw, 80px);
+      color: var(--violet);
+      line-height: 1.0;
+      letter-spacing: -2px;
+      margin-bottom: 12px;
+      animation: fadeUp 0.9s ease 0.2s both;
+    }
+    .hero-name .black { color: var(--black); }
+
+    .hero-subtitle {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 18pt;
+      color: var(--black);
+      margin-bottom: 24px;
+      animation: fadeUp 0.9s ease 0.3s both;
+    }
+
+    .hero-bio {
+      font-family: 'Roboto', sans-serif;
+      font-weight: 300;
+      font-size: 12pt;
+      color: var(--dark-gray);
+      line-height: 1.8;
+      max-width: 600px;
+      margin-bottom: 40px;
+      animation: fadeUp 0.9s ease 0.4s both;
+    }
+
+    .hero-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 44px;
+      animation: fadeUp 0.9s ease 0.5s both;
+    }
+    .chip {
+      background: var(--white);
+      border: 1.5px solid rgba(94,23,235,0.25);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 11px;
+      color: var(--violet);
+      letter-spacing: 0.3px;
+      transition: all 0.2s;
+    }
+    .chip:hover {
+      background: var(--violet);
+      color: var(--white);
+      border-color: var(--violet);
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      animation: fadeUp 0.9s ease 0.6s both;
+    }
+    .btn-primary {
+      background: var(--violet);
+      color: var(--white);
+      padding: 14px 32px;
+      border-radius: 100px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 13px;
+      text-decoration: none;
+      letter-spacing: 0.4px;
+      transition: all 0.25s;
+      box-shadow: 0 8px 24px rgba(94,23,235,0.28);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary:hover {
+      background: var(--violet-light);
+      transform: translateY(-2px);
+      box-shadow: 0 14px 32px rgba(94,23,235,0.38);
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--violet);
+      padding: 14px 32px;
+      border-radius: 100px;
+      border: 2px solid var(--violet);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 13px;
+      text-decoration: none;
+      letter-spacing: 0.4px;
+      transition: all 0.25s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-secondary:hover {
+      background: var(--violet-dim);
+      transform: translateY(-2px);
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--dark-gray);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      opacity: 0.6;
+      animation: fadeUp 1.2s ease 1s both;
+    }
+    .scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--violet), transparent);
+      animation: scrollDrop 2s ease infinite;
+    }
+    @keyframes scrollDrop {
+      0%, 100% { transform: scaleY(1); opacity: 1; }
+      50% { transform: scaleY(0.6); opacity: 0.4; }
+    }
+
+    /* ─── SECTIONS ─── */
+    section {
+      padding: 100px 60px;
+    }
+
+    .section-label {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 11px;
+      color: var(--violet);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    h2.section-title {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 18pt;
+      color: var(--black);
+      margin-bottom: 8px;
+    }
+
+    h3.section-sub {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 15pt;
+      color: var(--dark-gray);
+    }
+
+    .section-rule {
+      width: 48px;
+      height: 3px;
+      background: var(--violet);
+      border-radius: 2px;
+      margin-bottom: 56px;
+    }
+
+    /* ─── WHAT I'M WORKING ON ─── */
+    #working {
+      background: var(--off-white);
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 28px;
+    }
+
+    .project-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 36px;
+      border: 1px solid rgba(94,23,235,0.1);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      cursor: default;
+    }
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--violet);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.3s ease;
+    }
+    .project-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 50px rgba(94,23,235,0.12);
+      border-color: rgba(94,23,235,0.25);
+    }
+    .project-card:hover::before { transform: scaleY(1); }
+
+    .project-icon {
+      width: 52px; height: 52px;
+      background: var(--violet-dim);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 20px;
+      transition: background 0.3s;
+    }
+    .project-card:hover .project-icon { background: var(--violet); }
+
+    .project-badge {
+      display: inline-block;
+      background: var(--violet-dim);
+      color: var(--violet);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 100px;
+      margin-bottom: 14px;
+    }
+
+    .project-card h3 {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 15pt;
+      color: var(--black);
+      margin-bottom: 10px;
+    }
+    .project-card p {
+      font-size: 12pt;
+      color: var(--dark-gray);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+    .project-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--violet);
+      text-decoration: none;
+      transition: gap 0.2s;
+    }
+    .project-link:hover { gap: 10px; }
+
+    /* ─── LATEST NEWS ─── */
+    #news {
+      background: var(--white);
+    }
+
+    .news-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 28px;
+    }
+
+    .news-featured {
+      background: var(--violet);
+      border-radius: 20px;
+      padding: 48px;
+      color: var(--white);
+      position: relative;
+      overflow: hidden;
+    }
+    .news-featured::after {
+      content: '"';
+      position: absolute;
+      bottom: -20px;
+      right: 30px;
+      font-size: 200px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 900;
+      color: rgba(255,255,255,0.06);
+      line-height: 1;
+    }
+    .news-date {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.7;
+      margin-bottom: 16px;
+    }
+    .news-featured h3 {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 18pt;
+      color: var(--white);
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+    .news-featured p {
+      font-size: 12pt;
+      opacity: 0.85;
+      line-height: 1.75;
+      margin-bottom: 24px;
+    }
+    .news-featured a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--white);
+      text-decoration: none;
+      border-bottom: 1.5px solid rgba(255,255,255,0.4);
+      padding-bottom: 2px;
+      transition: border-color 0.2s;
+    }
+    .news-featured a:hover { border-color: var(--white); }
+
+    .news-side {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .news-item {
+      background: var(--off-white);
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid rgba(94,23,235,0.08);
+      transition: all 0.25s;
+      flex: 1;
+    }
+    .news-item:hover {
+      border-color: rgba(94,23,235,0.2);
+      box-shadow: 0 8px 24px rgba(94,23,235,0.08);
+    }
+    .news-item .news-date {
+      color: var(--violet);
+      margin-bottom: 8px;
+    }
+    .news-item h3 {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--black);
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+    .news-item p {
+      font-size: 11pt;
+      color: var(--dark-gray);
+      line-height: 1.6;
+    }
+
+    /* ─── STATS ─── */
+    #stats {
+      background: var(--black);
+      padding: 80px 60px;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+    }
+    .stat-item {
+      text-align: center;
+      padding: 32px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: border-color 0.3s;
+    }
+    .stat-item:hover { border-color: rgba(94,23,235,0.5); }
+    .stat-number {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 900;
+      font-size: 42px;
+      color: var(--violet);
+      letter-spacing: -1px;
+      display: block;
+    }
+    .stat-label {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-top: 8px;
+      display: block;
+    }
+
+    /* ─── CV ─── */
+    #cv {
+      background: var(--off-white);
+    }
+    .cv-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+    }
+    .cv-column h3 {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 15pt;
+      color: var(--dark-gray);
+      margin-bottom: 28px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid rgba(94,23,235,0.15);
+    }
+
+    .cv-entry {
+      margin-bottom: 28px;
+      padding-left: 20px;
+      border-left: 3px solid transparent;
+      position: relative;
+      transition: border-color 0.25s;
+    }
+    .cv-entry::before {
+      content: '';
+      position: absolute;
+      left: -5px;
+      top: 6px;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--violet);
+      border: 2px solid var(--off-white);
+      transition: transform 0.25s;
+    }
+    .cv-entry:hover { border-color: var(--violet); }
+    .cv-entry:hover::before { transform: scale(1.4); }
+
+    .cv-period {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--violet);
+      margin-bottom: 4px;
+    }
+    .cv-title {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 14px;
+      color: var(--black);
+      margin-bottom: 4px;
+    }
+    .cv-org {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--dark-gray);
+      margin-bottom: 8px;
+    }
+    .cv-desc {
+      font-size: 11.5pt;
+      color: var(--dark-gray);
+      line-height: 1.65;
+    }
+
+    .cv-download {
+      margin-top: 48px;
+      text-align: center;
+    }
+
+    /* ─── ACHIEVEMENTS ─── */
+    #achievements {
+      background: var(--white);
+    }
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .achievement-card {
+      background: var(--off-white);
+      border-radius: 16px;
+      padding: 28px;
+      border: 1px solid rgba(94,23,235,0.08);
+      transition: all 0.25s;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .achievement-card:hover {
+      background: var(--white);
+      border-color: rgba(94,23,235,0.2);
+      box-shadow: 0 8px 28px rgba(94,23,235,0.1);
+      transform: translateY(-4px);
+    }
+    .achievement-emoji {
+      font-size: 28px;
+    }
+    .achievement-card h3 {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 14px;
+      color: var(--black);
+      line-height: 1.35;
+    }
+    .achievement-card p {
+      font-size: 11pt;
+      color: var(--dark-gray);
+      line-height: 1.6;
+    }
+    .achievement-year {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 10px;
+      color: var(--violet);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-top: auto;
+    }
+
+    /* ─── SKILLS ─── */
+    #skills {
+      background: var(--off-white);
+    }
+    .skills-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+    }
+    .skill-group h3 {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 15pt;
+      color: var(--dark-gray);
+      margin-bottom: 24px;
+    }
+    .skill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .skill-tag {
+      background: var(--white);
+      border: 1.5px solid rgba(94,23,235,0.15);
+      border-radius: 10px;
+      padding: 8px 16px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--dark-gray);
+      transition: all 0.2s;
+    }
+    .skill-tag:hover {
+      background: var(--violet);
+      color: var(--white);
+      border-color: var(--violet);
+      transform: scale(1.04);
+    }
+
+    /* ─── CONTACT ─── */
+    #contact {
+      background: var(--white);
+      text-align: center;
+    }
+    #contact .section-label { text-align: center; }
+    #contact h2 { text-align: center; margin-bottom: 16px; }
+    #contact .section-rule { margin: 0 auto 24px; }
+
+    .contact-tagline {
+      font-size: 13pt;
+      color: var(--dark-gray);
+      line-height: 1.7;
+      max-width: 520px;
+      margin: 0 auto 48px;
+    }
+
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      border-radius: 100px;
+      border: 2px solid rgba(94,23,235,0.2);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--dark-gray);
+      text-decoration: none;
+      transition: all 0.25s;
+    }
+    .contact-link:hover {
+      background: var(--violet);
+      color: var(--white);
+      border-color: var(--violet);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(94,23,235,0.25);
+    }
+    .contact-link svg { width: 18px; height: 18px; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--black);
+      padding: 32px 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    footer .logo {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 900;
+      font-size: 18px;
+      color: var(--violet);
+    }
+    footer p {
+      font-size: 11px;
+      color: rgba(255,255,255,0.3);
+      font-family: 'Nunito', sans-serif;
+    }
+    footer .footer-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--violet);
+      animation: pulse 2s ease infinite;
+    }
+
+    /* ─── SCROLL ANIMATIONS ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      nav { padding: 16px 28px; }
+      .nav-links { display: none; }
+      section { padding: 70px 28px; }
+      #hero { padding: 120px 28px 80px; }
+      #stats { padding: 60px 28px; }
+      footer { padding: 24px 28px; }
+      .news-grid { grid-template-columns: 1fr; }
+      .cv-layout { grid-template-columns: 1fr; gap: 40px; }
+      .skills-layout { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .hero-name { font-size: 40px; letter-spacing: -1px; }
+    }
+    @media (max-width: 560px) {
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <a class="nav-logo" href="#hero">dylan<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="#working">Projects</a></li>
+      <li><a href="#news">News</a></li>
+      <li><a href="#cv">CV</a></li>
+      <li><a href="#achievements">Wins</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-bg-circle c1"></div>
+    <div class="hero-bg-circle c2"></div>
+    <div class="hero-content">
+      <div class="hero-tag">
+        <div class="dot"></div>
+        Available for collaborations
+      </div>
+      <h1 class="hero-name">Dylan<br><span class="black">Tasdhary.</span></h1>
+      <h2 class="hero-subtitle">Founder · FinTech Researcher · Builder</h2>
+      <p class="hero-bio">
+        Allan Gray Fellow & UCT MPhil FinTech candidate. Co-founder of <strong>Direla</strong> — 
+        democratising financial access across Africa. I believe in connecting with people first 
+        and their roles second. Kindness, honesty, and integrity come before any accolade.
+      </p>
+      <div class="hero-chips">
+        <span class="chip">FinTech</span>
+        <span class="chip">Computer Science</span>
+        <span class="chip">Blockchain</span>
+        <span class="chip">Open Payments</span>
+        <span class="chip">Product Design</span>
+        <span class="chip">Cape Town 🇿🇦</span>
+      </div>
+      <div class="hero-ctas">
+        <a href="#working" class="btn-primary">See My Work ↓</a>
+        <a href="https://direla.app" target="_blank" class="btn-secondary">Visit Direla ↗</a>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      scroll
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div id="stats">
+    <div class="stats-grid">
+      <div class="stat-item reveal">
+        <span class="stat-number">$41K</span>
+        <span class="stat-label">Raised via Hackathons</span>
+      </div>
+      <div class="stat-item reveal">
+        <span class="stat-number">4×</span>
+        <span class="stat-label">Hackathon Wins</span>
+      </div>
+      <div class="stat-item reveal">
+        <span class="stat-number">70+</span>
+        <span class="stat-label">Students Mentored</span>
+      </div>
+      <div class="stat-item reveal">
+        <span class="stat-number">106%</span>
+        <span class="stat-label">DevSociety Fundraising Growth</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- WORKING ON -->
+  <section id="working">
+    <div class="section-label">Currently Building</div>
+    <h2 class="section-title">What I'm Working On</h2>
+    <div class="section-rule"></div>
+    <div class="projects-grid">
+      <div class="project-card reveal">
+        <div class="project-icon">💜</div>
+        <span class="project-badge">Startup · Active</span>
+        <h3>Direla</h3>
+        <p>Co-founded a FinTech startup democratising financial access across Africa. Secured $41,000 in 9 months through four hackathon wins. Building tools that empower merchants and individuals with inclusive financial infrastructure.</p>
+        <a href="https://direla.app" target="_blank" class="project-link">Visit Direla →</a>
+      </div>
+      <div class="project-card reveal">
+        <div class="project-icon">🎓</div>
+        <span class="project-badge">Research · UCT</span>
+        <h3>MPhil in Financial Technology</h3>
+        <p>Currently pursuing postgraduate research at the University of Cape Town, exploring the intersection of financial systems, blockchain, and emerging payment protocols in the African context.</p>
+        <a href="https://www.eraonline.uct.ac.za/converis/portal/detail/Person/409752672" target="_blank" class="project-link">UCT Research Portal →</a>
+      </div>
+      <div class="project-card reveal">
+        <div class="project-icon">📱</div>
+        <span class="project-badge">Hackathon Win · 2025</span>
+        <h3>Mobile POS for African Merchants</h3>
+        <p>Won the SME Finance Track at OriginFest Hackathon for building Mobile Point-of-Sale software that turns a merchant's smartphone into a payment terminal — making commerce more accessible.</p>
+        <a href="https://www.instagram.com/p/DMt2nADP1Qi/" target="_blank" class="project-link">See Demo →</a>
+      </div>
+      <div class="project-card reveal">
+        <div class="project-icon">💬</div>
+        <span class="project-badge">Hackathon Win · 2025</span>
+        <h3>WhatsApp Hedera Wallet Bot</h3>
+        <p>Placed 2nd at MCP Africa Hackathon. A WhatsApp chatbot connecting to an MCP server to manage custodial Hedera wallets, enabling peer-to-peer money transfers through everyday messaging.</p>
+        <a href="https://www.linkedin.com/posts/tino-chaminuka_excited-to-announce-that-we-direla-placed-activity-7394441111253008384-DgJw" target="_blank" class="project-link">LinkedIn Post →</a>
+      </div>
+      <div class="project-card reveal">
+        <div class="project-icon">🧑‍💻</div>
+        <span class="project-badge">Teaching · UCT</span>
+        <h3>IS Head Tutor & CS Tutor</h3>
+        <p>Mentoring 70+ students across 13 projects in final year Project Management and BPM courses at UCT. Consistently achieving top placements — 1st, 2nd, and 3rd with averages above 75%.</p>
+      </div>
+      <div class="project-card reveal">
+        <div class="project-icon">⛓️</div>
+        <span class="project-badge">Education · 2025</span>
+        <h3>Blockchain Summer @ University of Zürich</h3>
+        <p>Completed an intensive 3-week deep dive into blockchain and Web3 at UZH, examining economic, technical, and regulatory dimensions of decentralised systems.</p>
+        <a href="https://www.linkedin.com/posts/dylan-tasdhary_1-month-later-still-recovering-from-this-activity-7364613557495152641-b7q4" target="_blank" class="project-link">Watch Explainer →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWS -->
+  <section id="news">
+    <div class="section-label">Updates</div>
+    <h2 class="section-title">Latest News</h2>
+    <div class="section-rule"></div>
+    <div class="news-grid">
+      <div class="news-featured reveal">
+        <div class="news-date">🏆 2025 — Biggest Win Yet</div>
+        <h3>1st Place: Interledger × UCT FinHub Hackathon</h3>
+        <p>Direla took first place by utilising the ILF Open Payments protocol to turn merchants' phones into a Mobile POS — accepting various forms of payment seamlessly. I led market research, product design, and pitching.</p>
+        <a href="https://www.instagram.com/p/DMt2nADP1Qi/" target="_blank">Watch the pitch on Instagram →</a>
+      </div>
+      <div class="news-side">
+        <div class="news-item reveal">
+          <div class="news-date">🥈 2025 — MCP Africa Hackathon</div>
+          <h3>2nd Place with Direla's WhatsApp Wallet</h3>
+          <p>Placed 2nd at The Cortex Hub Hackathon for our WhatsApp-based Hedera custodial wallet bot.</p>
+        </div>
+        <div class="news-item reveal">
+          <div class="news-date">🎓 2025 — University of Zürich</div>
+          <h3>Blockchain Deep Dive Completed</h3>
+          <p>Finished a 3-week intensive blockchain & Web3 course in Zürich — covering economics, technology, and regulation.</p>
+        </div>
+        <div class="news-item reveal">
+          <div class="news-date">📚 2025 — UCT</div>
+          <h3>Started MPhil in FinTech</h3>
+          <p>Officially enrolled in the MPhil Financial Technology programme at the University of Cape Town.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CV -->
+  <section id="cv">
+    <div class="section-label">Background</div>
+    <h2 class="section-title">Curriculum Vitae</h2>
+    <div class="section-rule"></div>
+    <div class="cv-layout">
+      <div class="cv-column">
+        <h3>Education</h3>
+        <div class="cv-entry reveal">
+          <div class="cv-period">2025 – Present</div>
+          <div class="cv-title">MPhil in Financial Technology</div>
+          <div class="cv-org">University of Cape Town</div>
+          <div class="cv-desc">Postgraduate research in FinTech, focusing on financial inclusion and blockchain payment systems in the African context.</div>
+        </div>
+        <div class="cv-entry reveal">
+          <div class="cv-period">2025</div>
+          <div class="cv-title">Deep Dive into Blockchain</div>
+          <div class="cv-org">University of Zürich — Summer Course</div>
+          <div class="cv-desc">3-week intensive covering blockchain economics, technology, and regulation across Web3 ecosystems.</div>
+        </div>
+        <div class="cv-entry reveal">
+          <div class="cv-period">2024</div>
+          <div class="cv-title">BCom Honours — Information Systems</div>
+          <div class="cv-org">University of Cape Town</div>
+          <div class="cv-desc">Specialising in Information Systems. Achieved highest mark in Digital Economics (90%). Dean's Merit List 2023.</div>
+        </div>
+        <div class="cv-entry reveal">
+          <div class="cv-period">2021 – 2023</div>
+          <div class="cv-title">BSc — Computer Science & Business Computing</div>
+          <div class="cv-org">University of Cape Town</div>
+          <div class="cv-desc">Double major in Computer Science and Business Computing. Science Faculty Entrance Scholarship recipient.</div>
+        </div>
+        <div class="cv-entry reveal">
+          <div class="cv-period">2020</div>
+          <div class="cv-title">National Senior Certificate</div>
+          <div class="cv-org">Jeppe High School for Boys, Johannesburg</div>
+          <div class="cv-desc">Dux Scholar — 91% average, 7 distinctions. Top IT student in district D9.</div>
+        </div>
+
+        <h3 style="margin-top: 40px;">Work Experience</h3>
+        <div class="cv-entry reveal">
+          <div class="cv-period">2022 – Present</div>
+          <div class="cv-title">IS Head Tutor & CS Tutor</div>
+          <div class="cv-org">University of Cape Town</div>
+          <div class="cv-desc">Mentoring 70+ final year students across 13 projects in Project Management and Business Process Management courses.</div>
+        </div>
+        <div class="cv-entry reveal">
+          <div class="cv-period">2024</div>
+          <div class="cv-title">Digital Literacy Tutor (Volunteer)</div>
+          <div class="cv-org">Ikamva Youth — Khayelitsha</div>
+          <div class="cv-desc">Teaching digital literacy to ~23 underprivileged high school learners to better equip them for university.</div>
+        </div>
+      </div>
+
+      <div class="cv-column">
+        <h3>Leadership</h3>
+        <div class="cv-entry reveal">
+          <div class="cv-period">2021 – Present</div>
+          <div class="cv-title">Allan Gray Orbis Foundation Fellow</div>
+          <div class="cv-org">Allan Gray Orbis Foundation</div>
+          <div class="cv-desc">Selected as part of the top 1% out of ~10,000 applicants for demonstrating entrepreneurial potential and outstanding academic achievement.</div>
+        </div>
+        <div class="cv-entry reveal">
+          <div class="cv-period">2023 – 2024</div>
+          <div class="cv-title">Vice Chairperson</div>
+          <div class="cv-org">UCT Developer's Society</div>
+          <div class="cv-desc">Led a 7-member executive team serving 500+ members. Grew fundraising by 106% through technology industry partnerships.</div>
+        </div>
+        <div class="cv-entry reveal">
+          <div class="cv-period">2023 – 2024</div>
+          <div class="cv-title">Head of Events</div>
+          <div class="cv-org">AGOF Candidate Fellow Committee</div>
+          <div class="cv-desc">Managed subcommittee of 3, served as MC for annual event with 250+ attendees.</div>
+        </div>
+
+        <h3 style="margin-top: 40px;">Technologies</h3>
+        <div class="cv-entry reveal">
+          <div class="cv-period">Languages</div>
+          <div class="cv-title">Java · Python · SQL</div>
+        </div>
+        <div class="cv-entry reveal">
+          <div class="cv-period">Engineering</div>
+          <div class="cv-title">Agile/Scrum · OOP · Design Patterns · UML · Relational DB Design · Concurrency</div>
+        </div>
+      </div>
+    </div>
+    <div class="cv-download reveal">
+      <a href="mailto:tasdhary.dylan@gmail.com?subject=CV%20Request" class="btn-primary">
+        Request Full CV ↗
+      </a>
+    </div>
+  </section>
+
+  <!-- ACHIEVEMENTS -->
+  <section id="achievements">
+    <div class="section-label">Recognition</div>
+    <h2 class="section-title">Awards & Achievements</h2>
+    <div class="section-rule"></div>
+    <div class="achievements-grid">
+      <div class="achievement-card reveal">
+        <div class="achievement-emoji">🥇</div>
+        <h3>1st Place — Interledger × UCT FinHub Hackathon</h3>
+        <p>Open Payments protocol Mobile POS for merchants' smartphones.</p>
+        <div class="achievement-year">2025</div>
+      </div>
+      <div class="achievement-card reveal">
+        <div class="achievement-emoji">🥈</div>
+        <h3>2nd Place — MCP Africa Hackathon (The Cortex Hub)</h3>
+        <p>WhatsApp chatbot with Hedera custodial wallets for P2P payments.</p>
+        <div class="achievement-year">2025</div>
+      </div>
+      <div class="achievement-card reveal">
+        <div class="achievement-emoji">🏆</div>
+        <h3>SME Finance Track Winner — OriginFest Hackathon</h3>
+        <p>Mobile POS software for African SME merchants.</p>
+        <div class="achievement-year">2025</div>
+      </div>
+      <div class="achievement-card reveal">
+        <div class="achievement-emoji">💜</div>
+        <h3>Allan Gray Orbis Foundation Fellow</h3>
+        <p>Top 1% of ~10,000 applicants for entrepreneurial potential.</p>
+        <div class="achievement-year">2021 – Present</div>
+      </div>
+      <div class="achievement-card reveal">
+        <div class="achievement-emoji">🎯</div>
+        <h3>Class Award ECO4131S — Digital Economics</h3>
+        <p>Highest mark in Honours Economics course (90%).</p>
+        <div class="achievement-year">UCT</div>
+      </div>
+      <div class="achievement-card reveal">
+        <div class="achievement-emoji">🥉</div>
+        <h3>3rd Place — Software Dev Project with SA Innovation Bank</h3>
+        <p>Top 3 of ~13 groups for yearlong agile project on personalisation R&D.</p>
+        <div class="achievement-year">2024</div>
+      </div>
+      <div class="achievement-card reveal">
+        <div class="achievement-emoji">📋</div>
+        <h3>2nd Place — BPM Project with Government Department</h3>
+        <p>Recognised by EY for GBV reporting process redesign for SAPS.</p>
+        <div class="achievement-year">2023</div>
+      </div>
+      <div class="achievement-card reveal">
+        <div class="achievement-emoji">🎓</div>
+        <h3>Dean's Merit List</h3>
+        <p>Awarded by UCT Science Faculty for consistent academic excellence.</p>
+        <div class="achievement-year">2023</div>
+      </div>
+      <div class="achievement-card reveal">
+        <div class="achievement-emoji">⭐</div>
+        <h3>Dux Scholar — Jeppe High School</h3>
+        <p>91% average, 7 distinctions. Top IT student in district D9.</p>
+        <div class="achievement-year">2020</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="section-label">Toolkit</div>
+    <h2 class="section-title">Skills & Expertise</h2>
+    <div class="section-rule"></div>
+    <div class="skills-layout">
+      <div class="skill-group reveal">
+        <h3>Technical Skills</h3>
+        <div class="skill-list">
+          <span class="skill-tag">Java</span>
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">SQL</span>
+          <span class="skill-tag">Agile / Scrum</span>
+          <span class="skill-tag">OOP</span>
+          <span class="skill-tag">Design Patterns</span>
+          <span class="skill-tag">UML Modelling</span>
+          <span class="skill-tag">Relational DB Design</span>
+          <span class="skill-tag">Data Structures</span>
+          <span class="skill-tag">Algorithms</span>
+          <span class="skill-tag">Concurrency</span>
+          <span class="skill-tag">Blockchain / Web3</span>
+          <span class="skill-tag">Open Payments Protocol</span>
+          <span class="skill-tag">Hedera / HTS</span>
+        </div>
+      </div>
+      <div class="skill-group reveal">
+        <h3>Soft Skills</h3>
+        <div class="skill-list">
+          <span class="skill-tag">Communication & Presentation</span>
+          <span class="skill-tag">Leadership & Teamwork</span>
+          <span class="skill-tag">Adaptability</span>
+          <span class="skill-tag">Problem Solving</span>
+          <span class="skill-tag">Design Thinking</span>
+          <span class="skill-tag">Analytical Thinking</span>
+          <span class="skill-tag">Product Design</span>
+          <span class="skill-tag">Market Research</span>
+          <span class="skill-tag">Business Analysis</span>
+          <span class="skill-tag">Pitching & Storytelling</span>
+          <span class="skill-tag">Mentorship</span>
+          <span class="skill-tag">Entrepreneurship</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="section-label">Get In Touch</div>
+    <h2 class="section-title">Let's Connect</h2>
+    <div class="section-rule"></div>
+    <p class="contact-tagline reveal">
+      Whether you're building something cool, want to collaborate on FinTech, 
+      or just want to chat — my inbox is always open. I love connecting with people 
+      who are passionate about making a difference.
+    </p>
+    <div class="contact-links reveal">
+      <a href="mailto:tasdhary.dylan@gmail.com" class="contact-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        Email Me
+      </a>
+      <a href="https://linkedin.com/in/Dylan-tasdhary" target="_blank" class="contact-link">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        LinkedIn
+      </a>
+      <a href="https://github.com/dyxta" target="_blank" class="contact-link">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+        GitHub
+      </a>
+      <a href="https://direla.app" target="_blank" class="contact-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        Direla.app
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="logo">dylan.</div>
+    <p>© 2025 Dylan Tasdhary · Cape Town, South Africa</p>
+    <div class="footer-dot"></div>
+  </footer>
+
+  <script>
+    // Nav scroll effect
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 20);
+    });
+
+    // Reveal on scroll
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    reveals.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
